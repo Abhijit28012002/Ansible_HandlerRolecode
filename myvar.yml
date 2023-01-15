@@ -1,0 +1,7 @@
+myport: 81
+myos:
+- "Redhat"
+- "Fedora"
+- "Centos"
+- "Amazon"
+
