@@ -1,0 +1,43 @@
+- hosts: all
+  vars_files:
+  - myvar.yml
+  tasks:
+  - name: install package
+    package:
+      name: "{{ item  }}"
+      state: present
+    loop:
+      - "httpd"
+      - "php"
+      - "git"
+      - "dialog"
+    notify: software install debug
+    when: ansible_facts["distribution"] in myos
+
+
+  - name: setup conf file
+    template:
+      src: "my.conf.j2"
+      dest: "/etc/httpd/conf.d/my.conf"
+    notify: "service httpd"
+
+  - name: deploy web page from local
+    copy:
+      src: "index.php"
+      dest: "/var/www/html/index.php"
+
+  - name: git pull code wed page
+    git:
+      repo: 'https://github.com/vimallinuxworld13/ansible-training-2022.git'
+      dest: "/var/www/html/mygit/"
+
+  handlers:
+  - name: service httpd
+    service:
+       name: "httpd"
+       state: restarted
+       enabled: true
+
+  - name: software install debug
+    debug:
+      msg: "i m debug"
